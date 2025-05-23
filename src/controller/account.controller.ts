@@ -62,7 +62,7 @@ export const createAccount = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error instanceof Error ? error.message : String(error)
+      message: error instanceof Error ? error.message : "Failed to create account",
     });
   }
 };
@@ -80,7 +80,14 @@ export const listAccounts = async (_req: Request, res: Response) => {
         expiryDate: accounts.expiryDate,
         phoneNumber: accounts.phoneNumber,
         dateOfBirth: accounts.dateOfBirth,
-      }
+      },
+      decrypted: {
+        cardNumber: decrypt(accounts.cardNumber),
+        cvv: decrypt(accounts.cvv),
+        expiryDate: decrypt(accounts.expiryDate),
+        phoneNumber: decrypt(accounts.phoneNumber),
+        dateOfBirth: decrypt(accounts.dateOfBirth),
+      },
     }));
 
     res.json({ accounts: result });
@@ -104,3 +111,4 @@ export const decryptData = (req: Request, res: Response) => {
     res.status(400).json({ error: "Failed to decrypt data" });
   }
 };
+
